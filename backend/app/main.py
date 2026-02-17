@@ -1,17 +1,6 @@
-from fastapi import FastAPI, Depends
-from app.db.deps import get_db
-from sqlalchemy import text
-from sqlalchemy.orm import Session
+from fastapi import FastAPI
 
-app = FastAPI()
+from app.api.routers import api_router
 
-
-@app.get("/health")
-def health():
-    return {"status": "ok, api is running"}
-
-
-@app.get("/health/db")
-def health_db(db: Session = Depends(get_db)):
-    state = db.execute(text("Select 1"))
-    return {"database": state.scalar()}
+app = FastAPI(title="Realtime Chat API")
+app.include_router(api_router)
