@@ -5,9 +5,10 @@ services:
     container_name: realtime_chat_api
     ports:
       - 8000:8000
+      - 5678:5678
     env_file:
       - .env
-    command: sh -c "uv sync --frozen && uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+    command: sh -c "uv sync --frozen && exec uv run python -m debugpy --listen 0.0.0.0:5678 -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
     volumes:
       - ./backend:/app
       - backend_venv:/app/.venv
