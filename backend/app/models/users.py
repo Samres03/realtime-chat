@@ -13,6 +13,7 @@ class User(Base, TimestampMixin):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    name: Mapped[int] = mapped_column(index=True)
     email: Mapped[str] = mapped_column(unique=True, index=True)
     password_hash: Mapped[str] = mapped_column(nullable=False)
     messages: Mapped[list["Message"]] = relationship("Message", back_populates="user")
