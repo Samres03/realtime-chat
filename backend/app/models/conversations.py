@@ -5,7 +5,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.models.timestamp import TimestampMixin
 
 if TYPE_CHECKING:
-    from app.models.conversation_members import ConversationMembers
+    from app.models.conversation_members import ConversationMember
     from app.models.message import Message
 
 
@@ -16,8 +16,8 @@ class Conversation(Base, TimestampMixin):
     messages: Mapped[list["Message"]] = relationship(
         "Message", back_populates="conversation", cascade="all, delete-orphan"
     )
-    conversation_members: Mapped[list["ConversationMembers"]] = relationship(
-        "ConversationMembers",
+    conversation_members: Mapped[list["ConversationMember"]] = relationship(
+        "ConversationMember",
         back_populates="conversation",
         cascade="all, delete-orphan",
     )
