@@ -1,4 +1,8 @@
 from app.schemas.auth import TokenResponse, UserPublic
+from app.crud.user import create_user
+from app.core.security import hash_password, validate_password
+
+from sqlalchemy.orm import Session
 
 
 class AuthService:
@@ -12,3 +16,11 @@ class AuthService:
                 email=email,
             ),
         )
+
+    @staticmethod
+    def create_user_service(
+        db: Session, name: str, email: str, password: str
+    ) -> TokenResponse:
+        validate_password(password)
+        password_hash = hash_password(password)
+        create_user(db, name, email, password_hash)
