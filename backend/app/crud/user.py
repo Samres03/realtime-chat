@@ -1,6 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from sqlalchemy.exc.DatabaseError import IntegrityError
+from sqlalchemy.exc import IntegrityError
 
 from app.models.users import User
 
@@ -24,7 +24,8 @@ def create_user(db: Session, name: str, email: str, password_hash: str) -> User:
     if existing_user:
         raise IntegrityError("Email in use")
     user = User(name=name, email=email, password_hash=password_hash)
-    db.add()
+    db.add(user)
     db.commit()
-    db.refresh()
+    db.refresh(user)
+    print(user.id)
     return user

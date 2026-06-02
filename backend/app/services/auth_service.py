@@ -1,15 +1,20 @@
 from app.schemas.auth import TokenResponse, UserPublic
 from app.crud.user import create_user
 from app.core.security import hash_password, validate_password
+from app.core.security import create_access_token
+from app.crud.user import get_user_by_mail
 
 from sqlalchemy.orm import Session
+
+from fastapi.exceptions import HTTPException
 
 
 class AuthService:
     @staticmethod
     def build_token_response(user_id: int, name: str, email: str) -> TokenResponse:
+        access_token = create_access_token(user_id)
         return TokenResponse(
-            access_token="not-a-real-token",
+            access_token=access_token,
             user=UserPublic(
                 id=user_id,
                 name=name,
@@ -23,4 +28,16 @@ class AuthService:
     ) -> TokenResponse:
         validate_password(password)
         password_hash = hash_password(password)
-        create_user(db, name, email, password_hash)
+        user = create_user(db, name, email, password_hash)
+        return AuthService.build_token_response(
+            user_id=user.id,
+            name=user.name,
+            email=user.email,
+        )
+
+    @staticmethod
+    def login_user_service(db: Session, email: str, password: str) -> TokenResponse:
+        # TODO: Validar que el usuario exista y la contraseña sea correcta
+        user = get_user_by_mail(db, email)
+        if not user:
+            raise HTTPException(status_code=401, detail="Invalid credentials")

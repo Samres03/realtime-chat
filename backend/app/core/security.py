@@ -1,11 +1,40 @@
 import re
+import jwt
 
-from passlib import CryptContext
+from passlib.context import CryptContext
 
 from app.core.errors import PasswordValidationException
+from app.core.config import settings
+from datetime import datetime, timezone, timedelta
+from fastapi.exceptions import HTTPException
 
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
+
+
+def create_access_token(user_id: int) -> str:
+    time_expires = datetime.now(timezone.utc) + timedelta(
+        minutes=settings.jwt_access_token_expire_minutes
+    )
+    payload = {
+        "sub": str(user_id),
+        "exp": time_expires,
+    }
+    return jwt.encode(
+        payload, settings.jwt_secret_key, algorithm=settings.jwt_algorithm
+    )
+
+
+def decode_access_token(token: str) -> dict:
+    try:
+        payload = jwt.decode(
+            token, settings.jwt_secret_key, algorithms=[settings.jwt_algorithm]
+        )
+        return payload
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token ha expirado")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Token inválido")
 
 
 def hash_password(password: str) -> str:
