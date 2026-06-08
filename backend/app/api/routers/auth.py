@@ -7,6 +7,9 @@ from app.schemas.auth import (
 )
 from app.db.deps import get_db
 from sqlalchemy.orm import Session
+from app.api.deps import get_current_user
+from app.schemas.user import UserPublic
+from app.models.users import User
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -21,3 +24,8 @@ def register(payload: RegisterRequest, db: Session = Depends(get_db)):
 @router.post("/login", response_model=TokenResponse)
 def login(payload: LoginRequest, db: Session = Depends(get_db)):
     return AuthService.login_user_service(db, payload.email, payload.password)
+
+
+@router.get("/me", response_model=UserPublic)
+def me(user: User = Depends(get_current_user)):
+    return user

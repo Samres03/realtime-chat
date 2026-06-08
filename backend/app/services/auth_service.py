@@ -1,6 +1,6 @@
 from app.schemas.auth import TokenResponse, UserPublic
 from app.crud.user import create_user
-from app.core.security import hash_password, validate_password
+from app.core.security import hash_password, validate_password, verify_password
 from app.core.security import create_access_token
 from app.crud.user import get_user_by_mail
 
@@ -37,7 +37,14 @@ class AuthService:
 
     @staticmethod
     def login_user_service(db: Session, email: str, password: str) -> TokenResponse:
-        # TODO: Validar que el usuario exista y la contraseña sea correcta
         user = get_user_by_mail(db, email)
         if not user:
-            raise HTTPException(status_code=401, detail="Invalid credentials")
+            raise HTTPException(status_code=401, detail="Invalid Mail")
+        if not verify_password(password, user.password_hash):
+            raise HTTPException(status_code=401, detail="Invalid Password")
+
+        return AuthService.build_token_response(
+            user_id=user.id,
+            name=user.name,
+            email=user.email,
+        )
