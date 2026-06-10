@@ -1,5 +1,6 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
+from app.schemas.user import UserPublic
 
 
 class CreateConversationRequest(BaseModel):
@@ -8,13 +9,13 @@ class CreateConversationRequest(BaseModel):
 
 
 class ConversationMemberPublic(BaseModel):
-    id: int
-    name: str
-    email: str
+    model_config = ConfigDict(from_attributes=True)
+    user: UserPublic
     role: str
 
 
 class ConversationResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: int
-    members: list[ConversationMemberPublic]
+    conversation_members: list[ConversationMemberPublic]
     created_at: datetime

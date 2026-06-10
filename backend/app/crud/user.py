@@ -19,6 +19,7 @@ def get_user_by_mail(db: Session, email: str) -> User | None:
 
 
 def create_user(db: Session, name: str, email: str, password_hash: str) -> User:
+    # TODO: Mover logica de validacion de email a un servicio
     email = email.lower().strip()
     existing_user = get_user_by_mail(db, email)
     if existing_user:

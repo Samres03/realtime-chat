@@ -4,6 +4,8 @@ from app.api.deps import get_current_user
 from app.models.users import User
 from app.db.deps import get_db
 from sqlalchemy.orm import Session
+from app.services.chat_service import ChatService
+
 
 router = APIRouter(prefix="/chat", tags=["chat"])
 
@@ -14,4 +16,4 @@ def create_conversation(
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    return True
+    return ChatService.create_conversation_service(db, user.id, payload.other_user_id)
