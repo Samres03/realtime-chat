@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field
-from app.schemas.user import UserPublic
+from app.schemas.user_scheme import UserPublic
 
 
 class BaseAuthRequest(BaseModel):

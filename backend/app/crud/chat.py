@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import select
 from app.models.conversations import Conversation
 from app.models.conversation_members import ConversationMember
 
@@ -23,3 +24,8 @@ def create_conversation(db: Session, user_id: int, other_user_id: int) -> Conver
     db.commit()
     db.refresh(conversation)
     return conversation
+
+
+def get_conversation_by_id(db: Session, conversation_id: int) -> Conversation:
+    statement = select(Conversation).where(Conversation.id == conversation_id)
+    return db.scalar(statement)

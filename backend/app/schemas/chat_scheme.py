@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
-from app.schemas.user import UserPublic
+from app.schemas.user_scheme import UserPublic
 
 
 class CreateConversationRequest(BaseModel):

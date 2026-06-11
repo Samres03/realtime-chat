@@ -2,7 +2,8 @@ from sqlalchemy.orm import Session
 from app.crud.chat import create_conversation
 from app.crud.user import get_user_by_id
 from fastapi.exceptions import HTTPException
-from app.schemas.chat import ConversationResponse
+from app.schemas.chat_scheme import ConversationResponse
+from app.crud.chat import get_conversation_by_id
 
 
 class ChatService:
@@ -20,4 +21,13 @@ class ChatService:
             if not get_user_by_id(db, user):
                 raise HTTPException(status_code=404, detail="User not found")
         conversation = create_conversation(db, user_id, other_user_id)
+        return ConversationResponse.model_validate(conversation)
+
+    @staticmethod
+    def get_conversation_by_id_service(
+        db: Session, conversation_id: int
+    ) -> ConversationResponse:
+        conversation = get_conversation_by_id(db, conversation_id)
+        if not conversation:
+            raise HTTPException(status_code=404, detail="Conversation not found")
         return ConversationResponse.model_validate(conversation)

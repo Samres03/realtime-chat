@@ -1,4 +1,5 @@
-from app.schemas.auth import TokenResponse, UserPublic
+from app.schemas.auth_scheme import TokenResponse
+from app.schemas.user_scheme import UserPublic
 from app.crud.user import create_user
 from app.core.security import hash_password, validate_password, verify_password
 from app.core.security import create_access_token
