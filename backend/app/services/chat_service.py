@@ -3,7 +3,7 @@ from app.crud.chat import create_conversation
 from app.crud.user import get_user_by_id
 from fastapi.exceptions import HTTPException
 from app.schemas.chat_scheme import ConversationResponse
-from app.crud.chat import get_conversation_by_id
+from app.crud.chat import get_conversation_by_id, get_conversations
 
 
 class ChatService:
@@ -31,3 +31,13 @@ class ChatService:
         if not conversation:
             raise HTTPException(status_code=404, detail="Conversation not found")
         return ConversationResponse.model_validate(conversation)
+
+    @staticmethod
+    def get_conversations_service(
+        db: Session, user_id: int
+    ) -> list[ConversationResponse]:
+        conversations = get_conversations(db, user_id)
+        return [
+            ConversationResponse.model_validate(conversation)
+            for conversation in conversations
+        ]

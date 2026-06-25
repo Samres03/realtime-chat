@@ -4,7 +4,6 @@ from sqlalchemy.exc import IntegrityError
 
 from app.models.users import User
 
-
 # Fusionalble, crear funcion generica para buscar por campo
 
 

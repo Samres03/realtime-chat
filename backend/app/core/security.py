@@ -8,7 +8,6 @@ from app.core.config import settings
 from datetime import datetime, timezone, timedelta
 from fastapi.exceptions import HTTPException
 
-
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
 
