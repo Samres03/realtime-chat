@@ -18,9 +18,9 @@ def create_conversation(db: Session, user_id: int, other_user_id: int) -> Conver
     conversation = Conversation()
     db.add(conversation)
     db.flush()
-    # TODO: esto se debe hacer en un bucle para poder agregar mas de 2 usuarios
-    create_conversation_member(db, user_id, "owner", conversation.id)
-    create_conversation_member(db, other_user_id, "member", conversation.id)
+    users = {"owner": user_id, "member": other_user_id}
+    for role, user_id in users.items():
+        create_conversation_member(db, user_id, role, conversation.id)
     db.commit()
     db.refresh(conversation)
     return conversation
